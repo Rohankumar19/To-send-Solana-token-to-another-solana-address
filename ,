@@ -1,0 +1,26 @@
+import * as web3 from '@solana/web3.js';
+
+const connection = new web3.Connection('https://solana-api.projectserum.com');
+const provider = web3.Keypair.generate();
+
+const fromWallet = web3.Keypair.fromSeed(new Uint8Array([your private key]));
+const toAddress = new web3.PublicKey('recipient Solana address');
+const amount = web3.LAMPORTS_PER_SOL;
+
+const transaction = new web3.Transaction().add(
+  web3.SystemProgram.transfer({
+    fromPubkey: fromWallet.publicKey,
+    toPubkey: toAddress,
+    lamports: amount,
+  })
+);
+
+transaction.feePayer = provider.publicKey;
+
+const signedTransaction = await web3.sendAndConfirmTransaction(
+  connection,
+  transaction,
+  [fromWallet],
+);
+
+console.log('Transaction successful!', signedTransaction);
